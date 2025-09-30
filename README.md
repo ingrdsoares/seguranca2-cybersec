@@ -88,6 +88,7 @@ Implementação de um plano de resposta a incidentes baseado nas fases do NIST:
 
 *   Exercícios apenas em ambiente controlado do curso.
 *   Respeitar o juramento Kensei e práticas de divulgação responsável.
+*   Atuar como consultor Blue Team, entregando uma arquitetura de defesa, um plano de monitoramento/SIEM e um plano de IR (NIST) de forma ética e responsável.
 
 ## 8. Briefing – Empresa Fictícia "LojaZeta"
 
