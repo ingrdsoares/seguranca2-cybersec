@@ -1,4 +1,4 @@
-graph TD
+flowchart TD
     subgraph "Internet"
         Usuario[Usuário]
     end
@@ -31,7 +31,7 @@ graph TD
 
         subgraph "Camada de Monitoramento e Resposta"
             Wazuh[SIEM - Wazuh]
-            Alertas[Alertas (E-mail/Slack)]
+            Alertas[Alertas E-mail/Slack]
             CloudTrail[AWS CloudTrail]
             
             Wazuh --> Alertas
