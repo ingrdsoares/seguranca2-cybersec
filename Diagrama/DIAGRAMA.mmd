@@ -1,0 +1,80 @@
+graph TD
+
+%% =========================
+%% INTERNET
+%% =========================
+subgraph internet["Internet"]
+    Usuario[Usuário]
+end
+
+Usuario -- HTTPS --> WAF
+
+%% =========================
+%% AWS CLOUD
+%% =========================
+subgraph aws["AWS Cloud"]
+
+    %% -----------------------
+    %% CAMADA DE PERÍMETRO
+    %% -----------------------
+    subgraph perimetro["Camada de Perímetro"]
+        WAF[AWS WAF]
+        LB[Application Load Balancer]
+    end
+
+    WAF --> LB
+
+    %% -----------------------
+    %% CAMADA DE REDE (VPC)
+    %% -----------------------
+    subgraph vpc["Camada de Rede (VPC)"]
+
+        %% SUB-REDE PÚBLICA
+        subgraph pub["Sub-rede Pública"]
+            SG_Web[SG_Web<br>Permitir 443 de 0.0.0.0/0]
+            Nginx[Instância Nginx]
+            SG_Web --> Nginx
+        end
+
+        %% SUB-REDE PRIVADA DE APLICAÇÃO
+        subgraph app["Sub-rede Privada de Aplicação"]
+            SG_App[SG_App<br>Permitir tráfego do SG_Web]
+            Node[Instância Node.js]
+            SG_App --> Node
+        end
+
+        %% SUB-REDE PRIVADA DE DADOS
+        subgraph dados["Sub-rede Privada de Dados"]
+            SG_DB[SG_DB<br>Permitir tráfego do SG_App]
+            Postgres[Banco de Dados PostgreSQL RDS<br>Criptografia em Repouso Ativada]
+            SG_DB --> Postgres
+        end
+
+    end
+
+    %% FLUXOS ENTRE AS CAMADAS
+    LB --> Nginx
+    Nginx --> Node
+    Node --> Postgres
+
+    %% -----------------------
+    %% CAMADA DE MONITORAMENTO
+    %% -----------------------
+    subgraph monitoramento["Camada de Monitoramento e Resposta"]
+        Wazuh[SIEM - Wazuh]
+        Alertas[Alertas: E-mail / Slack]
+        CloudTrail[AWS CloudTrail]
+        Wazuh --> Alertas
+    end
+
+end
+
+%% -----------------------
+%% LOGS
+%% -----------------------
+Nginx -- Logs --> Wazuh
+Node -- Logs --> Wazuh
+Postgres -- Logs --> Wazuh
+WAF -- Logs --> Wazuh
+CloudTrail -- Logs --> Wazuh
+
